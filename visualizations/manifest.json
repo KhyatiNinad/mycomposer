@@ -1,14 +1,14 @@
 {
-  "mycompany": {
-    "title": "[DISPLAY_NAME]",
-    "website": "[WEBSITE_URL]",
-    "logo": "[LOGO_URL]",
+  "KhyatiNinad": {
+    "title": "",
+    "website": "https://github.com/KhyatiNinad",
+    "logo": "https://avatars0.githubusercontent.com/u/15317894?v=3",
     "visualizations": {
 
 
       "list": {
           "license": "MIT",
-          "website": "[INFO_URL]",
+          "website": "https://github.com/KhyatiNinad",
           "versions": {
             "1.0.0": {
               "simple": {
