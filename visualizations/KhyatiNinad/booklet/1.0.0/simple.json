@@ -1,0 +1,40 @@
+{
+  "render": {
+    "markup": "booklet/view.html",
+    "script": "booklet/view.js",
+    "minimum": {
+      "height": 300,
+      "width": 300
+    }
+  },
+  "dependencies": {
+    "helpers": true,
+    "card": false
+  },
+  "fields": {},
+  "settings": [
+    {
+      "key": "showImage",
+      "type": "checkbox",
+      "defaultValue": false,
+      "templateOptions": {
+        "label": "Show Event Image",
+        "required": false
+      }
+    }
+  ],
+  "play" : {
+      "allow": false,
+      "auto": false,
+      "interval": 8,
+      "ignoreClick": false,
+      "loop": false
+  },  
+  "credits": [
+      {
+          "text": "",
+          "url": ""
+      }
+  ]
+}
+  
