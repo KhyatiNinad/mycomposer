@@ -1,7 +1,7 @@
 {
   "render": {
-    "markup": "simple/view.html",
-    "script": "simple/view.js",
+    "markup": "memorymap/view.html",
+    "script": "memorymap/view.js",
     "minimum": {
       "height": 300,
       "width": 300
@@ -27,8 +27,8 @@
       "allow": false,
       "auto": false,
       "interval": 8,
-      "ignoreClick": true,
-      "loop": true
+      "ignoreClick": false,
+      "loop": false
   },  
   "credits": [
       {
