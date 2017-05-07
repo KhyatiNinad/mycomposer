@@ -1,6 +1,6 @@
 {
   "KhyatiNinad": {
-    "title": "",
+    "title": "Khyati Majmudar",
     "website": "https://github.com/KhyatiNinad",
     "logo": "https://avatars0.githubusercontent.com/u/15317894?v=3",
     "visualizations": {
@@ -25,6 +25,48 @@
             }
           }
       }
+,
+      "memorymap": {
+          "license": "MIT",
+          "website": "https://github.com/KhyatiNinad",
+          "versions": {
+            "1.0.0": {
+              "simple": {
+                "title": "Travel Memory Map",
+                "description": "View your Travel Memories!",
+                "responsive": true,
+                "customFields": false,
+                "popularity": 0,
+                "featured": false,
+                "screens": [
+                  "images/icon.png"
+                ]
+              }
+            }
+          }
+      }
+,
+      "booklet": {
+          "license": "MIT",
+          "website": "https://github.com/KhyatiNinad",
+          "versions": {
+            "1.0.0": {
+              "simple": {
+                "title": "Booklet",
+                "description": "View Events in a Booklet!",
+                "responsive": true,
+                "customFields": false,
+                "popularity": 0,
+                "featured": false,
+                "screens": [
+                  "images/icon.png"
+                ]
+              }
+            }
+          }
+      }
+
+
 
 
 

@@ -16,12 +16,64 @@
     {
       "key": "showImage",
       "type": "checkbox",
-      "defaultValue": false,
+      "defaultValue": true,
       "templateOptions": {
         "label": "Show Event Image",
         "required": false
       }
+    },
+
+ {
+      "key": "paperStyle",
+      "type": "select",
+      "defaultValue": "gray",
+      "templateOptions": {
+        "label": "Select Paper Style",
+        "options": [
+          {
+            "name": "Gray Handmade Paper",
+            "value": "gray"
+          },
+          {
+            "name": "Light Handmade Paper",
+            "value": "light"
+          },
+          {
+            "name": "White Handmade Paper",
+            "value": "white"
+          },
+          {
+            "name": "Slate Handmade Paper",
+            "value": "slate"
+          },
+          {
+            "name": "Coffee Handmade Paper",
+            "value": "coffee"
+          },
+          {
+            "name": "Dark Handmade Paper",
+            "value": "dark"
+          },
+          {
+            "name": "Tan Crumpled Paper",
+            "value": "tan"
+          },
+          {
+            "name": "Light Crumpled Paper",
+            "value": "lightc"
+          },
+          {
+            "name": "Writing Paper",
+            "value": "writing"
+          },
+          {
+            "name": "Legal Pad",
+            "value": "legal"
+          }
+        ]
+      }
     }
+
   ],
   "play" : {
       "allow": false,
@@ -32,7 +84,7 @@
   },  
   "credits": [
       {
-          "text": "",
+          "text": "Khyati Ninad Majmudar",
           "url": ""
       }
   ]

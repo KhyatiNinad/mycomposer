@@ -1,8 +1,16 @@
 var map;
-var choroplethLayer;
-var trafficLayer;
-var pedLayer;
+var ContainerId, Schedule, Handlers, Settings;
 
+function getSupportedTransform() {
+    var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
+    var div = document.createElement('div');
+    for (var i = 0; i < prefixes.length; i++) {
+        if (div && div.style[prefixes[i]] !== undefined) {
+            return prefixes[i];
+        }
+    }
+    return false;
+}
 
 var VISUALIZATION = (function (visualization, window, document) {
     'use strict';
@@ -12,25 +20,74 @@ var VISUALIZATION = (function (visualization, window, document) {
     	styles: [
             'https://fonts.googleapis.com/css?family=Cairo:400,300',
             'https://fonts.googleapis.com/css?family=Open+Sans:300',
-			'memorymap/css/styles.css',
-            'memorymap/css/bootstrap.min.css',
-			'memorymap/css/leaflet.css',
-			'memorymap/css/MarkerCluster.css',
-			'memorymap/css/MarkerCluster.Default.css',
+            'booklet/css/jquery.ui.css',
+            'booklet/css/bootstrap.min.css',
+			'booklet/css/leaflet.css',
+			'booklet/css/MarkerCluster.css',
+			'booklet/css/MarkerCluster.Default.css',
+    	    'booklet/css/jquery.ui.html4.css', 
+            'booklet/css/booklet-html4.css',
+			'booklet/css/styles.css',
+			'booklet/css/booklet.css'
     	],
 
         scripts: [
-            '~/jquery/1.11.1/jquery-1.11.1.min',
-            'memorymap/js/jsrender.min.js',
-            'memorymap/js/bootstrap.min.js',
-            'memorymap/js/leaflet.js',
-            'memorymap/js/leaflet-dvf.js',
-            'memorymap/js/leaflet.markercluster.js',
-            'memorymap/js/moment.min.js',
-            'memorymap/js/stamen.js',
+    'booklet/js/jquery.min.1.7.js', 
+    'booklet/js/jquery-ui-1.8.20.custom.min.js', 
+    'booklet/js/jquery.mousewheel.min.js', 
+    'booklet/js/modernizr.2.5.3.min.js', 
+    'booklet/js/hash.js',
+    'booklet/js/turn.html4.min.js',
+    'booklet/js/booklet.js',
+    'booklet/js/jsrender.min.js',
+            'booklet/js/bootstrap.min.js',
+            'booklet/js/leaflet.js',
+            'booklet/js/leaflet-dvf.js',
+            'booklet/js/leaflet.markercluster.js',
+            'booklet/js/moment.min.js',
+            'booklet/js/stamen.js',
+            'booklet/js/booklet.js',
         ]
     };
 
+    if (getSupportedTransform())
+    {
+        visualization.config = {
+            // Define CSS & JS resources for visualization
+            styles: [
+                'https://fonts.googleapis.com/css?family=Cairo:400,300',
+                'https://fonts.googleapis.com/css?family=Open+Sans:300',
+                'booklet/css/jquery.ui.css',
+                'booklet/css/bootstrap.min.css',
+                'booklet/css/leaflet.css',
+                'booklet/css/MarkerCluster.css',
+                'booklet/css/MarkerCluster.Default.css',
+                'booklet/css/jquery.ui.css',
+    //            'booklet/css/booklet-html4.css',
+                'booklet/css/styles.css',
+                'booklet/css/booklet.css'
+            ],
+
+            scripts: [
+        'booklet/js/jquery.min.1.7.js',
+        'booklet/js/jquery-ui-1.8.20.custom.min.js',
+        'booklet/js/jquery.mousewheel.min.js',
+        'booklet/js/modernizr.2.5.3.min.js',
+        'booklet/js/hash.js',
+        'booklet/js/turn.min.js',
+        'booklet/js/booklet.js',
+        'booklet/js/jsrender.min.js',
+                'booklet/js/bootstrap.min.js',
+                'booklet/js/leaflet.js',
+                'booklet/js/leaflet-dvf.js',
+                'booklet/js/leaflet.markercluster.js',
+                'booklet/js/moment.min.js',
+                'booklet/js/stamen.js',
+                'booklet/js/booklet.js',
+            ]
+        };
+
+    }
     visualization.navigate = function (index) {
         // Add functionality to navigate events via Player controls if desired
     };
@@ -39,64 +96,53 @@ var VISUALIZATION = (function (visualization, window, document) {
         // Set defaults 
         var defaults = {
             // default setting value used to hide or show images for event
-            showImage: false
+            showImage: true,
+            paperStyle: 'gray'
+
         }
         var options = _.assign({}, defaults, settings);
         debugger;
 
-        // create a map in the "map" div, set the view to a given place and zoom
-        map = L.map('map').setView([0,0], 2);
-
-        /*
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-          .addTo(map);
-        */
-        var baseLayer = new L.StamenTileLayer('watercolor', {
-            detectRetina: true
-        });
-        
-        baseLayer.addTo(map);
-        
-        var layerControl = new L.Control.Layers();
-        //var legendControl = new L.Control.Legend();
-
-        layerControl.addTo(map);
-        //legendControl.addTo(map);
-
-
-        var resize = function () {
-            var $map = $('#map');
-
-            //$map.height($(window).height() - $('div.navbar').outerHeight());
-
-            if (map) {
-                map.invalidateSize();
-            }
-        };
-
-        $(window).on('resize', function () {
-            resize();
-        });
-
-        resize();
-
-
-
+        schedule.options = options;
         // Add properties for formatted date and resized image leveraging wcHelper methods
-/*        for (var i = 0; i < schedule.events.length; i++) {
+        for (var i = 0; i < schedule.events.length; i++) {
             // set event date - wcHelper.formatDateRange(type=event, event and timeOnly=false)
             schedule.events[i].date = wcHelper.formatDateRange('event', schedule.events[i], false);
 
             // set event image - wcHelper.getImage(event, size=sm)
             schedule.events[i].image = options.showImage ? wcHelper.getImage(schedule.events[i], 'sm') : '';
+            schedule.events[i].paperStyle = options.paperStyle;
+            if (i % 2 == 0)
+                schedule.events[i].pageClass = 'oddPage';
+            else
+                schedule.events[i].pageClass = 'evenPage';
+
         }
-        */
+        var tmpl = $.templates("#mainTemplate");    // Get compiled template
+        var html = tmpl.render(schedule);    // Render template using data - as HTML string
+        $("#mainPageDiv").html(html);                  // Insert HTML string into DOM
+
+        var tmpl = $.templates("#firstTemplate");    // Get compiled template
+        var html = tmpl.render(schedule);    // Render template using data - as HTML string
+        $("#thirdPageDiv").html(html);                  // Insert HTML string into DOM
+        setTimeout(
+        ellipsizeTitle, 100, $("#mainPageDiv"));
+
+        setTimeout(
+        ellipsizeTitle, 100, $("#thirdPageDiv"));
+        $("#fourthPage").addClass(options.paperStyle);
 /*        var tmpl = $.templates("#itemTemplate");    // Get compiled template
         var html = tmpl.render(schedule.events);    // Render template using data - as HTML string
         $("#itemList").html(html);                  // Insert HTML string into DOM
         */
         // Call handlers.ready for visualization to load
-        handlers.ready();
+        ContainerId = containerId;
+        Schedule = schedule;
+        Handlers = handlers;
+        Settings = settings;
+        loadApp();
+        
+        //handlers.ready();
 
         // Add detail view link after view is loaded
 /*        $(function() {

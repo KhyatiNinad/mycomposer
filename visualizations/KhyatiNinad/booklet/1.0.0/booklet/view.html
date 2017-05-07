@@ -1,28 +1,91 @@
-﻿<div id="map"></div>
+﻿<div id="canvas">
+    <div id="book-zoom">
+        <div class="sj-book">
+            <div depth="5" class="hard" id="firstPage"> <div class="side"></div><div class="main" id="mainPageDiv"></div> </div>
+            <div depth="5" class="hard front-side" id="secondPage"> <div class="depth"></div> </div>
+            <div class="own-size"  id="thirdPage"><div class="main" id="thirdPageDiv"></div></div>
+            <div class="own-size even"  id="fourthPage"><div class="evenPage"></div></div>
+            <div class="hard fixed back-side p2last"> <div class="depth"></div> </div>
+            <div class="hard plast"></div>
+        </div>
+    </div>
+    <div id="slider-bar" class="turnjs-slider">
+        <div id="slider"></div>
+    </div>
+</div>
+
+
 
 <script id="itemTemplate" type="text/x-jsrender">
-    <div class="group">
-        <div class="date">{{:date}}</div>
-        <div class="events">
-            <div id="event_{{:id}}" class="item" data-id="{{:id}}">
-                {{if image}}
-                    <a href="#" class="details-link">
-                        <img class="event-image" src="{{:image}}" alt="{{:name}}" />
-                    </a>
-                {{/if}}
-                <h3 class="title">Title by Khyati: 
-                    <a href="#" class="details-link wh-light-text">{{:name}}</a>
-                </h3>
+    <div class="container-fluid {{:paperStyle}}">
+        <div class="row-top">
+            <div class="col-lg-12 col-sm-12 full-height">
+                <div class="date">{{:date}}</div>
+            </div>
+        </div>
+        <div class="row-title">
+            <div class="col-lg-12 col-sm-12 full-height">
+                <div class="title">{{:name}}</div>
+            </div>
+        </div>
+        {{if image}}
+        <div class="row-first">
+            <div class="col-lg-12 col-sm-12 full-height">
+                <ul class="polaroids">
+                    <li id="event_{{:id}}" class="item" data-id="{{:id}}">
+                        <a title="{{:name}}" class="details-link" >
+                            <img class="image-responsive" alt="{{:name}}" src="{{:image}}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        {{/if}}
+        <div class="row-second">
+            <div class="col-lg-12 col-sm-12 full-height desc" >
                 {{:description}}
+            </div>
+        </div>
+        <div class="row-third">
+            <div class="col-lg-12 col-sm-12 full-height">
                 {{if primaryAction}}
-                    <a href="{{:primaryAction.url}}" title="{{:primaryAction.url}}" target="_blank" class="primary-action wh-dark">
-                        {{if primaryAction.label}}
-                            {{:primaryAction.label}}
-                        {{else}}
-                            ...
-                        {{/if}}
-                    </a>
+                <a href="{{:primaryAction.url}}" title="{{:primaryAction.url}}" target="_blank" class="primary-action wh-dark">
+                    {{if primaryAction.label}}
+                    {{:primaryAction.label}}
+                    {{else}}
+                    More Info
+                    {{/if}}
+                </a>
                 {{/if}}
+            </div>
+        </div>
+        <div class="{{:pageClass}}"></div>
+    </div>
+</script>
+
+<script id="mainTemplate" type="text/x-jsrender">
+    <div class="container-fluid mainText">
+        <div class="row mainText" style="height:60%">
+            <div class="row mainText">
+                <div class="col-lg-12 col-sm-12 mainTitle">
+                    {{:name}}
+                </div>
+            </div>
+            </div>
+        </div>
+</script>
+
+<script id="firstTemplate" type="text/x-jsrender">
+    <div class="container-fluid mainText">
+        <div class="row"  style="height:100%; width:100%; padding:10px">
+            <div class="col-lg-12 col-sm-12 mainTitle" style="height:30%; width:100%;">
+                {{:name}}
+            </div>
+            <div class="col-lg-12 col-sm-12 firstDesc" style="height:60%; width:100%;">
+                {{:description}}
+            </div>
+            <div class="col-lg-12 col-sm-12 firstDesc" style="height:10%; width:100%;">
+                {{:curator}}
             </div>
         </div>
     </div>
