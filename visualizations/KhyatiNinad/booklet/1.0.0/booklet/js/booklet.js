@@ -4,17 +4,9 @@
             var me = this;
 
             // if older browser then don't run javascript
-            if (document.addEventListener) {
                 this.el = document.getElementById(id);
                 var size = this.resize();
                 $(this.el).turn('size', size.width, size.height);
-
-                // on window resize, update the plugin size
-                window.addEventListener('resize', function (e) {
-                    var size = me.resize();
-                    $(me.el).turn('size', size.width, size.height);
-                });
-            }
         },
         resize: function () {
             // reset the width and height to the css defaults
@@ -332,6 +324,11 @@ function isChrome() {
 	return navigator.userAgent.indexOf('Chrome')!=-1;
 
 }
+function scrolltobook() {
+    $('html, body').animate({
+        scrollTop: $(".canvas").offset().top
+    }, 2000);
+}
 
 function loadApp() {
 
@@ -344,6 +341,23 @@ function loadApp() {
         return;
     }
 
+    $(window).resize(function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+
+            newHeight = $(window).height();
+            newWidth = $(window).width();
+
+            if (sizeChange) { resizeBook() };
+
+            flipbook.turn("center");
+            scrolltobook();
+
+            initialHeight = newHeight;
+            initialWidth = newWidth;
+
+        }, 500)
+    });
     // Mousewheel
 
     $('#book-zoom').mousewheel(function (event, delta, deltaX, deltaY) {
@@ -582,9 +596,11 @@ function loadApp() {
 
     $('#canvas').css({ visibility: '' });
     Handlers.ready();
-    module.init('book');
+//    module.init('book');
 
-//    setTimeout(setImageViewPointHeight, 500);
+    newHeight = $(window).height();
+    newWidth = $(window).width();
+//    setTimeout(resizeBook, 500);
 
 }
 
@@ -734,3 +750,55 @@ function resize() {
 }
 
 
+var initialHeight = $(window).height();
+var initialWidth = $(window).width();
+var newHeight;
+var newWidth;
+var resizeTimer;
+var fbWidth;
+var fbHeight;
+var fbDisplay = "double";
+
+function sizeChange() {
+    if (initialHeight >= 700 && newHeight < 700) return true;
+    if (initialHeight < 700 && newHeight >= 700) return true;
+    if (initialWidth >= 992 && newWidth < 992) return true;
+    if (initialWidth < 992 && newWidth <= 992) return true;
+    if (initialWidth >= 860 && newWidth < 860) return true;
+    if (initialWidth < 860 && newWidth >= 860) return true;
+    return false;
+}
+
+function resizeBook() {
+
+    if (newWidth < 850) {
+
+        fbDisplay = "single";
+        fbWidth = 400;
+        fbHeight = 500;
+
+    } else if (newHeight < 700 && newWidth > 850) {
+
+        fbDisplay = "double";
+        fbWidth = 800;
+        fbHeight = 500;
+
+    } else if (newHeight > 700 && newWidth < 992) {
+
+        fbDisplay = "double";
+        fbWidth = 800;
+        fbHeight = 500;
+
+    } else {
+
+        fbDisplay = "double";
+        fbWidth = 950;
+        fbHeight = 600;
+
+    }
+
+    console.log(newWidth + " x " + newHeight);
+    var flipbook = $('.sj-book');
+
+    flipbook.turn("display", fbDisplay).turn("size", fbWidth, fbHeight);
+}
