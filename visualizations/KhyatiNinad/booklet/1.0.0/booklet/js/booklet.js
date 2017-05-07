@@ -413,7 +413,7 @@ function loadApp() {
 
     // Flipbook
 
-    flipbook.bind(($.isTouch) ? 'touchend' : 'click', zoomHandle);
+//    flipbook.bind(($.isTouch) ? 'touchend' : 'click', zoomHandle);
 
     var totalEvents = Schedule.events.length + 6;
 
@@ -651,4 +651,38 @@ function doResize(event, ui) {
         transform: " " + "scale(" + scale + ")"
     });
 
+}
+$(document).ready(function () {
+    window.addEventListener('resize', resize);
+    document.body.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        // e.stopPropagation();
+    });
+});
+
+function getSize() {
+    console.log('get size');
+    var width = document.body.clientWidth;
+    var height = document.body.clientHeight;
+
+    return {
+        width: width,
+        height: height
+    }
+}
+
+function resize() {
+    console.log('resize event triggered');
+
+    var size = getSize();
+    console.log(size);
+
+    if (size.width > size.height) { // landscape
+        $('.sj-book').turn('display', 'double');
+    }
+    else {
+        $('.sj-book').turn('display', 'single');
+    }
+
+    $('.sj-book').turn('size', size.width, size.height);
 }
