@@ -345,16 +345,7 @@ function loadApp() {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
 
-            newHeight = $(window).height();
-            newWidth = $(window).width();
-
-            if (sizeChange) { resizeBook() };
-
-            flipbook.turn("center");
-            scrolltobook();
-
-            initialHeight = newHeight;
-            initialWidth = newWidth;
+            setImageViewPointHeight();
 
         }, 500)
     });
@@ -600,7 +591,7 @@ function loadApp() {
 
     newHeight = $(window).height();
     newWidth = $(window).width();
-//    setTimeout(resizeBook, 500);
+    setTimeout(setImageViewPointHeight, 500);
 
 }
 
@@ -687,8 +678,8 @@ $('#canvas').css({ visibility: 'hidden' });
 function setImageViewPointHeight() {
     debugger;
     var $el = $("#canvas");
-    var elHeight = $el.outerHeight();
-    var elWidth = $el.outerWidth();
+    var elHeight = $el[0].clientHeight;
+    var elWidth = $el[0].clientWidth;
 
     var $wrapper = $("#scaleable-wrapper");
 
@@ -705,16 +696,16 @@ function doResize(event, ui) {
 
     var scale, origin;
     var $el = $("#canvas");
-    var elHeight = $el.outerHeight();
-    var elWidth = $el.outerWidth();
-
+    var elHeight = $el[0].clientHeight;
+    var elWidth = $el[0].clientWidth + 50;
+    debugger;
     scale = Math.min(
       ui.size.width / elWidth,
       ui.size.height / elHeight
     );
 
     $el.css({
-        transform: " " + "scale(" + scale + ")"
+        transform: "translate(-15%, 0%)  " + "scale(" + scale + ")"
     });
 
 }

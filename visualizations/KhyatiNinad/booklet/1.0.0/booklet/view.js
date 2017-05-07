@@ -5,7 +5,7 @@ function getSupportedTransform() {
     debugger;
     var bd = document.getElementsByTagName("body")[0];
     //if (document.getElementsByTagName("body")[0].className.match(/ui-mobile-viewport/))
-        return false;
+      //  return false;
     var prefixes = 'transform WebkitTransform MozTransform OTransform msTransform'.split(' ');
     var div = document.createElement('div');
     for (var i = 0; i < prefixes.length; i++) {
