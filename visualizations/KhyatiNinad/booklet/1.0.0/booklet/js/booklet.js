@@ -533,6 +533,7 @@ function loadApp() {
     // Show canvas
 
     $('#canvas').css({ visibility: '' });
+    //setImageViewPointHeight();
     Handlers.ready();
 
 }
@@ -617,3 +618,20 @@ $('#canvas').css({ visibility: 'hidden' });
     };
 })(window.jQuery);
 
+function setImageViewPointHeight() {
+
+    $('#canvas').css('width', 'initial');
+
+    var targetHeight = $(window).height();
+    var containerHeight = $('.container').height();
+    var containerWidth = $('.container').width();
+
+    if (containerHeight > targetHeight) {
+        while (containerHeight > targetHeight) {
+            containerHeight = containerHeight - (containerHeight * .01);
+            containerWidth = containerWidth - (containerWidth * .01);
+        }
+        $('#canvas').width(containerWidth + 'px');
+    }
+
+}
