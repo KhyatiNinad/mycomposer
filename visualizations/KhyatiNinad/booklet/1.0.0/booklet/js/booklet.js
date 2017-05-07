@@ -533,8 +533,8 @@ function loadApp() {
     // Show canvas
 
     $('#canvas').css({ visibility: '' });
-    //setImageViewPointHeight();
     Handlers.ready();
+    setTimeout(setImageViewPointHeight, 500);
 
 }
 
@@ -619,19 +619,36 @@ $('#canvas').css({ visibility: 'hidden' });
 })(window.jQuery);
 
 function setImageViewPointHeight() {
+    debugger;
+    var $el = $("#canvas");
+    var elHeight = $el.outerHeight();
+    var elWidth = $el.outerWidth();
 
-    $('#canvas').css('width', 'initial');
+    var $wrapper = $("#scaleable-wrapper");
 
-    var targetHeight = $(window).height();
-    var containerHeight = $('.container').height();
-    var containerWidth = $('.container').width();
-
-    if (containerHeight > targetHeight) {
-        while (containerHeight > targetHeight) {
-            containerHeight = containerHeight - (containerHeight * .01);
-            containerWidth = containerWidth - (containerWidth * .01);
+    var starterData = {
+        size: {
+            width: $wrapper.width(),
+            height: $wrapper.height()
         }
-        $('#canvas').width(containerWidth + 'px');
     }
+    doResize(null, starterData);
+}
+
+function doResize(event, ui) {
+
+    var scale, origin;
+    var $el = $("#canvas");
+    var elHeight = $el.outerHeight();
+    var elWidth = $el.outerWidth();
+
+    scale = Math.min(
+      ui.size.width / elWidth,
+      ui.size.height / elHeight
+    );
+
+    $el.css({
+        transform: " " + "scale(" + scale + ")"
+    });
 
 }
