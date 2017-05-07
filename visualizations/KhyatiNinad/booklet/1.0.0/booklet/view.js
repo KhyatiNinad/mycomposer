@@ -32,7 +32,7 @@ var VISUALIZATION = (function (visualization, window, document) {
     	],
 
         scripts: [
-    'booklet/js/jquery.min.1.7.js', 
+    'booklet/js/jquery.1.9.1.min.js',
     'booklet/js/jquery-ui-1.8.20.custom.min.js', 
     'booklet/js/jquery.mousewheel.min.js', 
     'booklet/js/modernizr.2.5.3.min.js', 
@@ -69,7 +69,7 @@ var VISUALIZATION = (function (visualization, window, document) {
             ],
 
             scripts: [
-        'booklet/js/jquery.min.1.7.js',
+        'booklet/js/jquery.1.9.1.min.js',
         'booklet/js/jquery-ui-1.8.20.custom.min.js',
         'booklet/js/jquery.mousewheel.min.js',
         'booklet/js/modernizr.2.5.3.min.js',

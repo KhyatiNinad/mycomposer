@@ -51,6 +51,11 @@ body, ul, table, form{
 	margin: 10px auto;
 }
 
+#scaleable-wrapper
+{
+	width: 960px;
+	height: 600px;
+}
 #book-zoom{
 	-webkit-transition: -webkit-transform 1s;
 	-moz-transition: -moz-transform 1s;

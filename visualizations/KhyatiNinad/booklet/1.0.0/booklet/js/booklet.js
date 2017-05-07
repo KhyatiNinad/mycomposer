@@ -423,9 +423,10 @@ function loadApp() {
     $('.sj-book .p2last').addClass('p' + (totalEvents - 1));
     $('.sj-book .plast').addClass('p' + (totalEvents));
 
+    flipbook.bind(($.isTouch) ? 'touchend' : 'click', zoomHandle);
 
     flipbook.turn({
-        elevation: 80,
+        elevation: 50,
         acceleration: !isChrome(),
         autoCenter: true,
         gradients: true,
@@ -534,7 +535,7 @@ function loadApp() {
 
     $('#canvas').css({ visibility: '' });
     Handlers.ready();
-    setTimeout(setImageViewPointHeight, 500);
+//    setTimeout(setImageViewPointHeight, 500);
 
 }
 
@@ -653,11 +654,7 @@ function doResize(event, ui) {
 
 }
 $(document).ready(function () {
-    window.addEventListener('resize', resize);
-    document.body.addEventListener('touchmove', function (e) {
-        e.preventDefault();
-        // e.stopPropagation();
-    });
+//    loadApp();
 });
 
 function getSize() {
