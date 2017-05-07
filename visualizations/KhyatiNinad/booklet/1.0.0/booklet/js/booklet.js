@@ -6,13 +6,12 @@
             // if older browser then don't run javascript
             if (document.addEventListener) {
                 this.el = document.getElementById(id);
-                var size = this.resize();
-                $(this.el).turn('size', size.width, size.height);
+                //var size = this.resize();
+                $(this.el).turn('resize');
 
                 // on window resize, update the plugin size
                 window.addEventListener('resize', function (e) {
-                    var size = me.resize();
-                    $(me.el).turn('size', size.width, size.height);
+                    $(me.el).turn('resize');
                 });
             }
         },
