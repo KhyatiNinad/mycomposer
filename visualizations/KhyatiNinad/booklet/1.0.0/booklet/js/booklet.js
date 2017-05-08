@@ -97,9 +97,9 @@ function loadApp() {
 
                 disableControls(page);
                 var div = $(".magazine .p" + page);
-                setTimeout(ellipsizeTextBox, 500, div);
+                setTimeout(ellipsizeTextBox, 100, div);
                 var div = $(".magazine .p" + page + 1);
-                setTimeout(ellipsizeTextBox, 500, div);
+                setTimeout(ellipsizeTextBox, 100, div);
 
                 $(this).turn('center');
 
@@ -921,6 +921,8 @@ function ellipsizeTextBox(div) {
         var min = 4;
         var max = 50;
         var exceeded = false;
+        if ($("#wh-container").width() < 1000)
+            max = 20;
 
         for (var i = 0; i < 30; i++) {
             testTag.css('font-size', fontSize);

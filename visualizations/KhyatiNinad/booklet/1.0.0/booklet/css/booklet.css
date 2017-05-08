@@ -561,7 +561,7 @@ ul.polaroids a {
     float: left;
     margin: 0 0 27px 30px;
     width: auto;
-    padding: 10px 10px 10px;
+    padding: 2px 2px 2px;
     text-align: center;
     font-family: "Marker Felt",sans-serif;
     text-decoration: none;
@@ -575,6 +575,11 @@ ul.polaroids a {
     height: 90%;
 }
 
+@media screen and (min-width: 1000px) {
+    ul.polaroids a {
+    padding: 10px 10px 10px;
+    }
+}
 ul.polaroids li {
     padding-left: 0;
 }
