@@ -293,8 +293,6 @@ body, ul, table, form{
 }
 
 .sj-book .own-size{
-	width:460px;
-	height:582px;
 	background-color:white;
 	overflow:hidden;
 }

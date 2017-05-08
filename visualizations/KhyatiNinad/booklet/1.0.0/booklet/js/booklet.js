@@ -104,6 +104,7 @@ function loadPage(page) {
         var html = tmpl.render(Schedule.events[id]);    // Render template using data - as HTML string
         div.html(html);                  // Insert HTML string into DOM
         setTimeout(ellipsizeTextBox, 100, div );
+        setTimeout(resizeDiv, 500);
     }
     else
     {
@@ -114,6 +115,7 @@ function loadPage(page) {
         });    // Render template using data - as HTML string
         div.html(html);                  // Insert HTML string into DOM
         setTimeout(ellipsizeTextBox, 100, div);
+        setTimeout(resizeDiv, 500);
         //div.html('<div style="width:100%; height:100%; ">&nbsp;' + '</div>');
     }
     /*
@@ -125,14 +127,55 @@ function loadPage(page) {
 
 }
 
+function resizeDiv()
+{
+    debugger;
+    var page = $(".page-wrapper");
+    var page2 = $(".own-size");
+
+    var width = $(".sj-book").width() / 2;
+    var height = $(".sj-book").height();
+    page2.css(
+        {
+            height: height,
+            width: width
+        });
+}
+
+function addStartPage(page, book)
+{
+    var width = $(window).width(),
+    height = $(window).height()
+
+
+        var bound = calculateBound({
+            width: 960,
+            height: 600,
+            boundWidth: Math.min(960, width),
+            boundHeight: Math.min(600, height)
+        });
+
+    var element = $('<div />',
+        {
+            'class': 'own-size p' + page,
+            css: {width: bound.width / 2, height: bound.height}
+        });
+
+    book.append(element);
+    loadPage(page, book);
+}
+
 function addPage(page, book) {
 
+    debugger;
+    var bwidth = book.width();
+    var bheight = book.height();
 	var id, pages = book.turn('pages');
 	if (!book.turn('hasPage', page)) {
 
 		var element = $('<div />',
 			{'class': 'own-size',
-				css: {width: 460, height: 582}
+				css: {width: bwidth, height: bheight}
 			}).
 			html('<div class="loader"></div>');
 
@@ -341,6 +384,7 @@ function loadApp() {
         return;
     }
 
+    /*
     $(window).resize(function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
@@ -349,6 +393,7 @@ function loadApp() {
 
         }, 500)
     });
+    */
     // Mousewheel
 
     $('#book-zoom').mousewheel(function (event, delta, deltaX, deltaY) {
@@ -441,26 +486,12 @@ function loadApp() {
         }
     });
 
-    // Arrows
-
-    $(document).keydown(function (e) {
-
-        var previous = 37, next = 39;
-
-        switch (e.keyCode) {
-            case previous:
-
-                $('.sj-book').turn('previous');
-
-                break;
-            case next:
-
-                $('.sj-book').turn('next');
-
-                break;
-        }
-
+    $(window).resize(function () {
+        resizeViewport();
+    }).bind('orientationchange', function () {
+        resizeViewport();
     });
+
 
 
     // Flipbook
@@ -472,11 +503,37 @@ function loadApp() {
     if (totalEvents % 2 == 1)
         totalEvents++;
 
+
+    for (var x = 5; x < totalEvents; x++) {
+        addStartPage(x, flipbook);
+    }
+
+    
+    var element = $('<div class="hard fixed back-side p2last"> <div class="depth"></div> </div>');
+    flipbook.append(element);
+                    
+    var element = $('<div class="hard plast"></div>');
+    flipbook.append(element);
+
     $('.sj-book .p2last').addClass('p' + (totalEvents - 1));
     $('.sj-book .plast').addClass('p' + (totalEvents));
 
-    flipbook.bind(($.isTouch) ? 'touchend' : 'click', zoomHandle);
+    var width = $(window).width(),
+    height = $(window).height()
 
+
+    var bound = calculateBound({
+        width: 960,
+        height: 600,
+        boundWidth: Math.min(960, width),
+        boundHeight: Math.min(600, height)
+    });
+
+    $(".own-size").css({ width: bound.width / 2, height: bound.height }
+        );
+
+    //flipbook.bind(($.isTouch) ? 'touchend' : 'click', zoomHandle);
+    
     flipbook.turn({
         elevation: 50,
         acceleration: !isChrome(),
@@ -570,6 +627,7 @@ function loadApp() {
             },
 
             missing: function (e, pages) {
+
                 for (var i = 0; i < pages.length; i++) {
                     addPage(pages[i], $(this));
                 }
@@ -578,26 +636,139 @@ function loadApp() {
         }
     });
 
+    $('#book-zoom').zoom({
+        flipbook: $('.sj-book'),
 
+        max: function () {
+
+            return largeMagazineWidth() / $('.sj-book').width();
+
+        },
+
+        when: {
+
+            swipeLeft: function () {
+
+                $(this).zoom('sj-book').turn('next');
+
+            },
+
+            swipeRight: function () {
+
+                $(this).zoom('sj-book').turn('previous');
+
+            },
+
+            resize: function (event, scale, page, pageElement) {
+
+
+            },
+
+            zoomIn: function () {
+
+                $('.sj-book').removeClass('animated').addClass('zoom-in');
+
+                if (!window.escTip && !$.isTouch) {
+                    escTip = true;
+
+                    $('<div />', { 'class': 'exit-message' }).
+						html('<div>Press ESC to exit</div>').
+							appendTo($('body')).
+							delay(2000).
+							animate({ opacity: 0 }, 500, function () {
+							    $(this).remove();
+							});
+                }
+            },
+
+            zoomOut: function () {
+
+                setTimeout(function () {
+                    $('.sj-book').addClass('animated').removeClass('zoom-in');
+                    resizeViewport();
+                }, 0);
+
+            }
+        }
+    });
+        
+
+
+
+    // Zoom event
+    /*
+    if ($.isTouch)
+        $('.book-zoom').bind('zoom.doubleTap', zoomTo);
+    else
+        $('.book-zoom').bind('zoom.tap', zoomTo);
+        */
+
+    $(document).keydown(function (e) {
+
+        var previous = 37, next = 39, esc = 27;
+
+        switch (e.keyCode) {
+            case previous:
+
+                // left arrow
+                $('.book-zoom').turn('previous');
+                e.preventDefault();
+
+                break;
+            case next:
+
+                //right arrow
+                $('.book-zoom').turn('next');
+                e.preventDefault();
+
+                break;
+            case esc:
+
+                $('.book-zoom').zoom('zoomOut');
+                e.preventDefault();
+
+                break;
+        }
+    });
+
+    resizeDiv();
     $('#slider').slider('option', 'max', numberOfViews(flipbook));
 
     flipbook.addClass('animated');
 
     // Show canvas
 
-    $('#canvas').css({ visibility: '' });
+    resizeViewport();
     Handlers.ready();
 //    module.init('book');
 
-    newHeight = $(window).height();
-    newWidth = $(window).width();
-    setTimeout(setImageViewPointHeight, 500);
+//    newHeight = $(window).height();
+//    newWidth = $(window).width();
+//    setTimeout(setImageViewPointHeight, 500);
 
 }
 
-// Hide canvas
+function largeMagazineWidth() {
 
-$('#canvas').css({ visibility: 'hidden' });
+    return 2214;
+
+}
+
+function zoomTo(event) {
+
+    setTimeout(function () {
+        if ($('.book-zoom').data().regionClicked) {
+            $('.book-zoom').data().regionClicked = false;
+        } else {
+            if ($('.book-zoom').zoom('value') == 1) {
+                $('.book-zoom').zoom('zoomIn', event);
+            } else {
+                $('.book-zoom').zoom('zoomOut');
+            }
+        }
+    }, 1);
+
+}
 
 (function ($, undefined) {
     function resizeLoop(testTag, checkSize) {
@@ -705,13 +876,10 @@ function doResize(event, ui) {
     );
 
     $el.css({
-        transform: "translate(-15%, 0%)  " + "scale(" + scale + ")"
+        transform: "translate(-18%, 0%)  " + "scale(" + scale + ")"
     });
 
 }
-$(document).ready(function () {
-//    loadApp();
-});
 
 function getSize() {
     console.log('get size');
@@ -792,4 +960,87 @@ function resizeBook() {
     var flipbook = $('.sj-book');
 
     flipbook.turn("display", fbDisplay).turn("size", fbWidth, fbHeight);
+}
+
+
+function resizeViewport() {
+
+    var width = $(window).width(),
+		height = $(window).height(),
+		options = $('.sj-book').turn('options');
+
+    $('.sj-book').removeClass('animated');
+
+    $('.book-zoom').css({
+        width: width,
+        height: height
+    }).
+	zoom('resize');
+
+
+    if ($('.sj-book').turn('zoom') == 1)
+    {
+        var bound = calculateBound({
+            width: options.width,
+            height: options.height,
+            boundWidth: Math.min(options.width, width),
+            boundHeight: Math.min(options.height, height)
+        });
+
+        if (bound.width % 2 !== 0)
+            bound.width -= 1;
+
+
+        if (bound.width != $('.sj-book').width() || bound.height != $('.sj-book').height()) {
+
+            $('.sj-book').turn('size', bound.width, bound.height);
+
+            if ($('.sj-book').turn('page') == 1)
+                $('.sj-book').turn('peel', 'br');
+        }
+        $('.sj-book').css({ top: 20, left: 0 });
+        $('.sj-book').turn('center');
+    }
+
+    $('.sj-book').addClass('animated');
+
+}
+
+
+function decodeParams(data) {
+
+    var parts = data.split('&'), d, obj = {};
+
+    for (var i = 0; i < parts.length; i++) {
+        d = parts[i].split('=');
+        obj[decodeURIComponent(d[0])] = decodeURIComponent(d[1]);
+    }
+
+    return obj;
+}
+
+// Calculate the width and height of a square within another square
+
+function calculateBound(d) {
+
+    var bound = { width: d.width, height: d.height };
+
+    if (bound.width > d.boundWidth || bound.height > d.boundHeight) {
+
+        var rel = bound.width / bound.height;
+
+        if (d.boundWidth / rel > d.boundHeight && d.boundHeight * rel <= d.boundWidth) {
+
+            bound.width = Math.round(d.boundHeight * rel) - 100;
+            bound.height = d.boundHeight - 100;
+
+        } else {
+
+            bound.width = d.boundWidth - 100;
+            bound.height = Math.round(d.boundWidth / rel) - 100;
+
+        }
+    }
+
+    return bound;
 }
