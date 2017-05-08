@@ -11,13 +11,23 @@ function loadApp() {
         return;
     }
 
+
+    var totalEvents = Schedule.events.length + 6;
+
+    if (totalEvents % 2 == 1)
+        totalEvents++;
+
+    $('.sj-book .p2last').addClass('p' + (totalEvents - 1));
+    $('.sj-book .plast').addClass('p' + (totalEvents));
+
+
     // Create the flipbook
 
     flipbook.turn({
 
         // Magazine width
 
-        width: 922,
+        width: 960,
 
         // Magazine height
 
@@ -45,7 +55,7 @@ function loadApp() {
 
         // The number of pages
 
-        pages: 12,
+        pages: totalEvents,
 
         // Events
 
@@ -80,6 +90,10 @@ function loadApp() {
             turned: function (event, page, view) {
 
                 disableControls(page);
+                var div = $(".magazine .p" + page);
+                setTimeout(ellipsizeTextBox, 500, div);
+                var div = $(".magazine .p" + page + 1);
+                setTimeout(ellipsizeTextBox, 500, div);
 
                 $(this).turn('center');
 
@@ -172,12 +186,12 @@ function loadApp() {
     });
 
     // Zoom event
-
+    /*
     if ($.isTouch)
         $('.magazine-viewport').bind('zoom.doubleTap', zoomTo);
     else
         $('.magazine-viewport').bind('zoom.tap', zoomTo);
-
+        */
 
     // Using arrow keys to turn the page
 
@@ -395,15 +409,89 @@ function addPage(page, book) {
         element.html('<div class="gradient"></div><div class="loader"></div>');
 
         // Load the page
-        loadPage(page, element);
+        loadPage(page, book, element);
+        if(page == 1)
+        {
+            var tmpl = $.templates("#mainTemplate");    // Get compiled template
+            var html = tmpl.render(Schedule);    // Render template using data - as HTML string
+            $("#mainPageDiv").html(html);                  // Insert HTML string into DOM
+            setTimeout(
+            ellipsizeTitle, 300, $("#mainPageDiv"));
+            var dataName = $('.mainX', $("#mainPageDiv"));
+            dataName.css({ 'display': 'inline-block' });
+
+        }
+        else if (page == 3) {
+            var tmpl = $.templates("#firstTemplate");    // Get compiled template
+            var html = tmpl.render(Schedule);    // Render template using data - as HTML string
+            $("#thirdPageDiv").html(html);                  // Insert HTML string into DOM
+
+            setTimeout(
+            ellipsizeTitle, 100, $("#thirdPageDiv"));
+        }
+        else if (page == 4) {
+            if (Schedule.events) {
+                if(Schedule.events.length > 0)
+                    $("#fourthPage").addClass(Schedule.events[0].paperStyle);
+            }
+        }
     }
 
 }
 
-function loadPage(page, pageElement) {
+function loadPage(page, book, pageElement) {
+
+    var pages = book.turn('pages');
 
     // Create an image element
+    var element;
+    if (page == 1)
+    {
+        element = $('<div depth="5" class="hard" id="firstPage" style="height: 100%"> <div class="side"></div><div class="main" id="mainPageDiv"  style="height: 100%"></div> </div>');
+    }
+    else if (page == 2) {
+        element = $('<div depth="5" class="hard front-side" id="secondPage"> <div class="depth"></div> </div>');
+    }
+    else if (page == 3) {
+        element = $('<div class="own-size" id="thirdPage"><div class="main" id="thirdPageDiv"></div></div>');
+    }
+    else if (page == 4) {
+        element = $('<div class="own-size even" id="fourthPage"><div class="evenPage"></div></div>');
+    }
+    else if (page == pages - 1) {
+        element = $('<div class="hard fixed back-side p2last own-size"> </div>');
+    }
+    else if (page == pages) {
+        element = $('<div class="hard fixed back-side p2last own-size"><div class="container-fluid mainText"><div class="row" style="height:100%; width:100%; padding:10px"><div class="col-lg-12 col-sm-12 col-md-12 " style="height:33%; width:100%;"><div class="" style="width:100%; height:100%;"><div class="img-responsive backImage"></div></div></div></div></div> </div>');
+    }
+    else {
+        element = $('<div class="own-size"> </div>');
+        var id = page - 5;
+        if (id >= 0 && id < Schedule.events.length) {
+            var tmpl = $.templates("#itemTemplate");    // Get compiled template
+            var html = tmpl.render(Schedule.events[id]);    // Render template using data - as HTML string
+            element.html(html);                  // Insert HTML string into DOM
+            //        setTimeout(ellipsizeTextBox, 500, div );
+            //setTimeout(resizeDiv, 500);
+        }
+        else {
+            var tmpl = $.templates("#itemTemplate");    // Get compiled template
+            var html = tmpl.render({
+                paperStyle: Schedule.options.paperStyle,
+                pageClass: 'oddPage'
+            });    // Render template using data - as HTML string
+            element.html(html);                  // Insert HTML string into DOM
+            //        setTimeout(ellipsizeTextBox, 500, div);
+            //setTimeout(resizeDiv, 500);
+            //div.html('<div style="width:100%; height:100%; ">&nbsp;' + '</div>');
+        }
+    }
+    element.appendTo(pageElement);
+    // Remove the loader indicator
 
+    pageElement.find('.loader').remove();
+
+    return;
     var img = $('<div />');
 
     img.mousedown(function (e) {
@@ -762,3 +850,139 @@ function calculateBound(d) {
 
     return bound;
 }
+
+function ellipsizeTitle(div) {
+    $('.mainTitle', div).fitText();
+    $('.firstDesc', div).fitText();
+
+    var data = $('.firstDescData', div);
+    var el = data[0];
+
+    if (typeof el !== 'undefined') {
+        data.css({ 'display': 'inline-block' });
+        data.css({ 'padding-bottom': '10px' });
+        var dataName = $('.firstDescName', div);
+        dataName.css({ 'display': 'inline-block' });
+        debugger;
+        var keep = el.innerHTML;
+        while (el.scrollHeight > el.offsetHeight) {
+            el.innerHTML = keep;
+            el.innerHTML = el.innerHTML.substring(0, el.innerHTML.length - 10);
+            keep = el.innerHTML;
+            el.innerHTML = el.innerHTML + "...";
+        }
+    }
+}
+function ellipsizeTextBox(div) {
+    debugger;
+    var title = $('.title', div);
+    title.fitText();
+    $('.desc', div).fitText();
+    $('.date', div).fitText();
+    title.css({ 'display': 'inline-block' });
+    $('.desc', div).css({ 'display': 'inline-block' });
+    $('.date', div).css({ 'display': 'inline-block' });;
+
+    /*    var data = $('.desc', div);
+        var link = $('.details-link', div);
+        var el = data[0];
+    
+        var keep = el.innerHTML;
+        while (el.scrollHeight > el.offsetHeight) {
+            el.innerHTML = keep;
+            el.innerHTML = el.innerHTML.substring(0, el.innerHTML.length - 10);
+            keep = el.innerHTML;
+            el.innerHTML = el.innerHTML + "...";
+        }
+        */
+    $('.details-link', div).on('click', function (e) {
+        e.preventDefault();
+        debugger;
+
+        // Get event id that was set in eventTemplate
+        var id = $(this).parents('.item').attr('data-id');
+
+        // Call showDetail method with event id passed to display built in player detail window
+        Handlers.showDetail(id);
+    });
+}
+
+
+
+(function ($, undefined) {
+    function resizeLoop(testTag, checkSize) {
+        var fontSize = 10;
+        var min = 10;
+        var max = 0;
+        var exceeded = false;
+
+        for (var i = 0; i < 30; i++) {
+            testTag.css('font-size', fontSize);
+            if (checkSize(testTag)) {
+                max = fontSize;
+                fontSize = (fontSize + min) / 2;
+            } else {
+                if (max == 0) {
+                    // Start by growing exponentially
+                    min = fontSize;
+                    fontSize *= 2;
+                } else {
+                    // If we're within 1px of max anyway, call it a day
+                    if (max - fontSize < 2)
+                        break;
+
+                    // If we've seen a max, move half way to it
+                    min = fontSize;
+                    fontSize = (fontSize + max) / 2;
+                }
+            }
+        }
+
+        return fontSize;
+    }
+
+    function sizeText(tag) {
+        var width = tag.width();
+        var height = tag.height();
+        tag.css('display', '').css('vertical-align', '');
+
+        // Clone original tag and append to the same place so we keep its original styles, especially font
+        var testTag = tag.clone(true)
+		.appendTo(tag.parent())
+		.css({
+		    position: 'absolute',
+		    left: 0, top: 0,
+		    width: 'auto', height: 'auto'
+		});
+
+        var fontSize;
+
+        // TODO: This decision of 10 characters is arbitrary. Come up
+        // with a smarter decision basis.
+        if (tag.text().length < 10)
+        {
+            fontSize = resizeLoop(testTag, function (t) {
+                return t.width() > width || t.height() > height;
+            });
+        }
+        else {
+            testTag.css('width', width);
+            fontSize = resizeLoop(testTag, function (t) {
+                return t.height() > height;
+            });
+        }
+        
+        testTag.remove();
+        tag.css('font-size', fontSize);
+        tag.css('display', 'table-cell');
+        tag.css('vertical-align', 'middle');
+
+        $('#output').append('<div>' + fontSize + '</div>');
+    };
+
+    $.fn.fitText = function () {
+        this.each(function (i, tag) {
+            sizeText($(tag));
+        });
+    };
+})(window.jQuery);

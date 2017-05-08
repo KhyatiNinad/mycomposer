@@ -142,9 +142,8 @@ var VISUALIZATION = (function (visualization, window, document) {
         setTimeout(
         ellipsizeTitle, 100, $("#thirdPageDiv"));
         $("#fourthPage").addClass(options.paperStyle);
+
         */
-
-
 
 
 /*        var tmpl = $.templates("#itemTemplate");    // Get compiled template
