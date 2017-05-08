@@ -20,6 +20,10 @@ function loadApp() {
     $('.sj-book .p2last').addClass('p' + (totalEvents - 1));
     $('.sj-book .plast').addClass('p' + (totalEvents));
 
+    var dDisplay = 'single';
+
+    if ($("#wh-container").width() > 1000)
+        dDisplay = 'double';
 
     // Create the flipbook
 
@@ -52,6 +56,8 @@ function loadApp() {
         // Elevation from the edge of the flipbook when turning a page
 
         elevation: 50,
+
+        display: dDisplay,
 
         // The number of pages
 
