@@ -46,6 +46,11 @@ function updateDepth(book, newPage) {
 
 		newPage = newPage || page;
 
+    
+		var div = $(".sj-book .p" + newPage);
+		setTimeout(ellipsizeTextBox, 500, div);
+
+
 	if (newPage>3)
 		$('.sj-book .p2 .depth').css({
 			width: depthWidth,
@@ -71,9 +76,33 @@ function updateDepth(book, newPage) {
 function ellipsizeTitle(div) {
     $('.mainTitle', div).fitText();
     $('.firstDesc', div).fitText();
+
+    var data = $('.firstDescData', div);
+    var el = data[0];
+    
+    if (typeof el !== 'undefined') {
+        data.css({ 'display': 'inline-block' });
+        data.css({ 'padding-bottom': '10px' });
+        var dataName = $('.firstDescName', div);
+        dataName.css({ 'display': 'inline-block' });
+        debugger;
+        var keep = el.innerHTML;
+        while (el.scrollHeight > el.offsetHeight) {
+            el.innerHTML = keep;
+            el.innerHTML = el.innerHTML.substring(0, el.innerHTML.length - 10);
+            keep = el.innerHTML;
+            el.innerHTML = el.innerHTML + "...";
+        }
+    }
 }
 function ellipsizeTextBox(div) {
-    var data = $('.desc', div);
+    debugger;
+    var title = $('.title', div);
+    title.fitText();
+    $('.desc', div).fitText();
+    $('.date', div).fitText();
+
+/*    var data = $('.desc', div);
     var link = $('.details-link', div);
     var el = data[0];
 
@@ -84,6 +113,7 @@ function ellipsizeTextBox(div) {
         keep = el.innerHTML;
         el.innerHTML = el.innerHTML + "...";
     }
+    */
     $('.details-link', div).on('click', function (e) {
         e.preventDefault();
         debugger;
@@ -103,7 +133,7 @@ function loadPage(page) {
         var tmpl = $.templates("#itemTemplate");    // Get compiled template
         var html = tmpl.render(Schedule.events[id]);    // Render template using data - as HTML string
         div.html(html);                  // Insert HTML string into DOM
-        setTimeout(ellipsizeTextBox, 100, div );
+//        setTimeout(ellipsizeTextBox, 500, div );
         setTimeout(resizeDiv, 500);
     }
     else
@@ -114,7 +144,7 @@ function loadPage(page) {
             pageClass : 'oddPage'
         });    // Render template using data - as HTML string
         div.html(html);                  // Insert HTML string into DOM
-        setTimeout(ellipsizeTextBox, 100, div);
+//        setTimeout(ellipsizeTextBox, 500, div);
         setTimeout(resizeDiv, 500);
         //div.html('<div style="width:100%; height:100%; ">&nbsp;' + '</div>');
     }
@@ -129,17 +159,7 @@ function loadPage(page) {
 
 function resizeDiv()
 {
-    debugger;
-    var page = $(".page-wrapper");
-    var page2 = $(".own-size");
-
-    var width = $(".sj-book").width() / 2;
-    var height = $(".sj-book").height();
-    page2.css(
-        {
-            height: height,
-            width: width
-        });
+    resizeViewport();
 }
 
 function addStartPage(page, book)
@@ -158,7 +178,7 @@ function addStartPage(page, book)
     var element = $('<div />',
         {
             'class': 'own-size p' + page,
-            css: {width: bound.width / 2, height: bound.height}
+            css: {width: 960 / 2, height: 600}
         });
 
     book.append(element);
@@ -170,7 +190,20 @@ function addPage(page, book) {
     debugger;
     var bwidth = book.width();
     var bheight = book.height();
-	var id, pages = book.turn('pages');
+    var width = $(window).width(),
+    height = $(window).height()
+
+
+    var bound = calculateBound({
+        width: 960,
+        height: 600,
+        boundWidth: Math.min(960, width),
+        boundHeight: Math.min(600, height)
+    });
+    bwidth = bound.width / 2;
+    bheight = bound.height;
+//    alert('add Page' + JSON.stringify(bound));
+    var id, pages = book.turn('pages');
 	if (!book.turn('hasPage', page)) {
 
 		var element = $('<div />',
@@ -383,7 +416,6 @@ function loadApp() {
         setTimeout(loadApp, 10);
         return;
     }
-
     /*
     $(window).resize(function () {
         clearTimeout(resizeTimer);
@@ -503,16 +535,19 @@ function loadApp() {
     if (totalEvents % 2 == 1)
         totalEvents++;
 
-
+    /*
     for (var x = 5; x < totalEvents; x++) {
         addStartPage(x, flipbook);
     }
 
-    
-    var element = $('<div class="hard fixed back-side p2last"> <div class="depth"></div> </div>');
+    */
+    var element = $('<div class="hard fixed back-side p2last own-size"> <div class="depth"></div> </div>');
+    element.css({ width: 960 / 2, height: 600 });
+
     flipbook.append(element);
                     
-    var element = $('<div class="hard plast"></div>');
+    var element = $('<div class="hard plast own-size"></div>');
+    element.css({ width: 960 / 2, height: 600 });
     flipbook.append(element);
 
     $('.sj-book .p2last').addClass('p' + (totalEvents - 1));
@@ -529,9 +564,29 @@ function loadApp() {
         boundHeight: Math.min(600, height)
     });
 
-    $(".own-size").css({ width: bound.width / 2, height: bound.height }
-        );
+    $(".own-size").css({ width: 960 / 2, height: 600 });
 
+    var scale = Math.min(
+  bound.width / 960,
+  bound.height / 600
+);
+    var width = $(window).width();
+
+    if (scale < 1) {
+        $("#firstPage").css({"background-position-x": -480});
+        $(".sj-book .plast").css({ "background-position-x": '-480px !important' });
+        clearTimeout(resizeTimer);
+        resizeTimer = setInterval(function () {
+
+            resizeViewport();
+
+        }, 500);
+    }
+
+//    alert(scale);
+//    $(".own-size").css({
+//        transform: "translate(0%, 0%)  " + "scale(" + scale + ")"
+//    });
     //flipbook.bind(($.isTouch) ? 'touchend' : 'click', zoomHandle);
     
     flipbook.turn({
@@ -993,7 +1048,9 @@ function resizeViewport() {
 
         if (bound.width != $('.sj-book').width() || bound.height != $('.sj-book').height()) {
 
+            //alert(JSON.stringify(bound));
             $('.sj-book').turn('size', bound.width, bound.height);
+            $(".own-size").css({ width: bound.width / 2, height: bound.height });
 
             if ($('.sj-book').turn('page') == 1)
                 $('.sj-book').turn('peel', 'br');
