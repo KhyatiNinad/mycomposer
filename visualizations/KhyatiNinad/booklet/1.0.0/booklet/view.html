@@ -1,21 +1,46 @@
-﻿<div id="scaleable-wrapper">
-    <div id="canvas">
-        <div id="book-zoom" class="book-zoom">
-                <div class="sj-book" id="book">
-                    <div depth="5" class="hard" id="firstPage"> <div class="side"></div><div class="main" id="mainPageDiv"></div> </div>
-                    <div depth="5" class="hard front-side" id="secondPage"> <div class="depth"></div> </div>
-                    <div class="own-size" id="thirdPage"><div class="main" id="thirdPageDiv"></div></div>
-                    <div class="own-size even" id="fourthPage"><div class="evenPage"></div></div>
-                    
-                </div>
-                <div id="slider-bar" class="turnjs-slider" style="display:none">
-                    <div id="slider"></div>
+﻿<div id="canvas" style="display:none; width:100%; margin:0px auto">
+    <div class="zoom-icon zoom-icon-in"></div>
+    <div class="magazine-viewport">
+        <div class="container">
+            <div class="magazine">
+                <!-- Next button -->
+                <div ignore="1" class="next-button"></div>
+                <!-- Previous button -->
+                <div ignore="1" class="previous-button"></div>
             </div>
         </div>
     </div>
+    <!-- Thumbnails -->
+    <div class="thumbnails">
+        <div>
+            <ul>
+                <li class="i">
+                    <span>1</span>
+                </li>
+                <li class="d">
+                    <span>2-3</span>
+                </li>
+                <li class="d">
+                    <span>4-5</span>
+                </li>
+                <li class="d">
+                    <span>6-7</span>
+                </li>
+                <li class="d">
+                    <span>8-9</span>
+                </li>
+                <li class="d">
+                    <span>10-11</span>
+                </li>
+                <li class="i">
+                    <span>12</span>
+                </li>
+                <ul>
+                    <div>
+                    </div>
+        </div>
+    </div>
 </div>
-
-
 
 <script id="itemTemplate" type="text/x-jsrender">
     <div class="container-fluid {{:paperStyle}} ">

@@ -129,7 +129,7 @@ var VISUALIZATION = (function (visualization, window, document) {
                 schedule.events[i].pageClass = 'evenPage';
 
         }
-        var tmpl = $.templates("#mainTemplate");    // Get compiled template
+/*        var tmpl = $.templates("#mainTemplate");    // Get compiled template
         var html = tmpl.render(schedule);    // Render template using data - as HTML string
         $("#mainPageDiv").html(html);                  // Insert HTML string into DOM
 
@@ -142,6 +142,11 @@ var VISUALIZATION = (function (visualization, window, document) {
         setTimeout(
         ellipsizeTitle, 100, $("#thirdPageDiv"));
         $("#fourthPage").addClass(options.paperStyle);
+        */
+
+
+
+
 /*        var tmpl = $.templates("#itemTemplate");    // Get compiled template
         var html = tmpl.render(schedule.events);    // Render template using data - as HTML string
         $("#itemList").html(html);                  // Insert HTML string into DOM
