@@ -912,8 +912,8 @@ function ellipsizeTextBox(div) {
 (function ($, undefined) {
     function resizeLoop(testTag, checkSize) {
         var fontSize = 10;
-        var min = 10;
-        var max = 0;
+        var min = 4;
+        var max = 50;
         var exceeded = false;
 
         for (var i = 0; i < 30; i++) {
@@ -925,7 +925,7 @@ function ellipsizeTextBox(div) {
                 if (max == 0) {
                     // Start by growing exponentially
                     min = fontSize;
-                    fontSize *= 2;
+                    fontSize *= 1.1;
                 } else {
                     // If we're within 1px of max anyway, call it a day
                     if (max - fontSize < 2)
@@ -944,6 +944,7 @@ function ellipsizeTextBox(div) {
     function sizeText(tag) {
         var width = tag.width();
         var height = tag.height();
+
         tag.css('display', '').css('vertical-align', '');
 
         // Clone original tag and append to the same place so we keep its original styles, especially font
@@ -974,7 +975,7 @@ function ellipsizeTextBox(div) {
         
         testTag.remove();
         tag.css('font-size', fontSize);
-        tag.css('display', 'table-cell');
+        tag.css('display', 'inline-block');
         tag.css('vertical-align', 'middle');
 
         $('#output').append('<div>' + fontSize + '</div>');
